@@ -3,19 +3,34 @@ def parse_file(filename):
     return [tuple(map(int, line.split())) for line in file]
   
 def report_is_safe(report):
-  is_descending = report[0] > report[1]
+  if report[0] < report[1]:
+    direction = 'inc'
+  elif report[0] > report[1]:
+    direction = 'dec'
+  else:
+    return False
 
-  for a, b in zip(report, report[1:]):
-    if abs(a - b) not in range (1, 4):
+  for i in range(len(report) - 1):
+    a, b = report[i], report[i + 1]
+    diff = b - a
+    if abs(diff) not in (1, 2, 3):
       return False
-    if is_descending and a < b:
+    if direction == 'inc' and not (a < b):
       return False
-    if not is_descending and a > b:
+    if direction == 'dec' and not (a > b):
       return False
-    
-    
-    
   return True
+
+def report_is_safe_with_dampener(report):
+
+  if report_is_safe(report):
+    return True
+  
+  for i in range(len(report)):
+    modified = report[:i] + report[i + 1:]
+    if report_is_safe(modified):
+      return True
+  return False
 
 if __name__ == "__main__":
   import sys
@@ -25,4 +40,9 @@ if __name__ == "__main__":
 
   safe_reports_count = sum(1 for report in reports if report_is_safe(report))
 
-  print(safe_reports_count)
+  print("part 1: safe report count: ", safe_reports_count)
+
+  safe_reports_with_dampener = sum(1 for report in reports if report_is_safe_with_dampener(report))
+
+  print("part 2: safe with dampener count: ", safe_reports_with_dampener)
+
