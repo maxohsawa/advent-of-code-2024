@@ -46,6 +46,7 @@ def is_m_s_pair(a, b):
 def count_x_masses(grid):
   count = 0
 
+  # constrain range because we are looking for X shapes that require at least one space in each cardinal direction
   for y in range(1, height - 1):
     for x in range(1, width - 1):
       if grid[y][x] == 'A':
